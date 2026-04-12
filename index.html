@@ -200,7 +200,29 @@ body{
 /* ── Sidebar ── */
 .sidebar{display:flex;flex-direction:column;gap:1.25rem;}
 
-.upcoming-list{padding:0 1rem 1rem;display:flex;flex-direction:column;gap:8px;margin-top:1rem;}
+.filter-wrap{padding:0.75rem 1rem 0;display:flex;flex-wrap:wrap;gap:5px;}
+.filter-btn{
+  font-size:11px;font-weight:500;
+  font-family:'Noto Sans KR',sans-serif;
+  padding:3px 10px;
+  border-radius:20px;
+  border:0.5px solid var(--border2);
+  background:var(--surface2);
+  color:var(--text2);
+  cursor:pointer;
+  transition:all 0.13s;
+}
+.filter-btn:hover{background:var(--surface);color:var(--text);}
+.filter-btn.active{border-color:transparent;color:#fff;}
+.filter-btn.active.주요행사{background:var(--purple);}
+.filter-btn.active.방학{background:var(--green);}
+.filter-btn.active.정기시험{background:var(--red);}
+.filter-btn.active.수행평가{background:var(--amber);}
+.filter-btn.active.모의고사{background:#A0208A;}
+.filter-btn.active.과제{background:var(--accent);}
+.filter-btn.active.전체{background:var(--text);}
+
+.upcoming-list{padding:0 1rem 1rem;display:flex;flex-direction:column;gap:8px;margin-top:0.75rem;}
 .ev-row{
   display:flex;align-items:flex-start;gap:10px;
   padding:10px 12px;
@@ -357,6 +379,15 @@ body{
     <div class="card">
       <div class="card-head">
         <div class="card-title">📌 다가오는 일정</div>
+      </div>
+      <div class="filter-wrap" id="filterWrap">
+        <button class="filter-btn active 전체" data-type="전체">전체</button>
+        <button class="filter-btn 주요행사" data-type="주요행사">주요행사</button>
+        <button class="filter-btn 방학" data-type="방학">방학</button>
+        <button class="filter-btn 정기시험" data-type="정기시험">정기시험</button>
+        <button class="filter-btn 수행평가" data-type="수행평가">수행평가</button>
+        <button class="filter-btn 모의고사" data-type="모의고사">모의고사</button>
+        <button class="filter-btn 과제" data-type="과제">과제</button>
       </div>
       <div class="upcoming-list" id="upcomingList">
         <div class="state-msg"><div class="spinner"></div>불러오는 중...</div>
@@ -545,18 +576,31 @@ function renderDetail(){
   `).join('');
 }
 
+// ── Filter ──
+let activeFilter = '전체';
+document.getElementById('filterWrap').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if(!btn) return;
+  activeFilter = btn.dataset.type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderUpcoming();
+});
+
 // ── Upcoming ──
 function renderUpcoming(){
   const list=document.getElementById('upcomingList');
   const upcoming=events
     .filter(e=>{
       const d=parseDate(e.date);
-      return d && d>=today;
+      if(!d || d<today) return false;
+      if(activeFilter==='전체') return true;
+      return e.type===activeFilter;
     })
     .sort((a,b)=>a.date.localeCompare(b.date))
-    .slice(0,8);
+    .slice(0,10);
   if(!upcoming.length){
-    list.innerHTML='<div class="empty">다가오는 일정이 없어요</div>';
+    list.innerHTML='<div class="empty">해당 일정이 없어요</div>';
     return;
   }
   list.innerHTML=upcoming.map(e=>`
