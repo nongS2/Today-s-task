@@ -189,12 +189,12 @@ body{
   max-width:100%;
   display:block;
 }
-.chip.시험{background:var(--red-light);color:var(--red);}
-.chip.과제{background:var(--amber-light);color:var(--amber);}
-.chip.수업{background:var(--green-light);color:var(--green);}
-.chip.공지{background:var(--accent-light);color:var(--accent);}
-.chip.행사{background:var(--purple-light);color:var(--purple);}
-.chip.기타{background:var(--surface2);color:var(--text2);}
+.chip.주요행사{background:var(--purple-light);color:var(--purple);}
+.chip.방학{background:var(--green-light);color:var(--green);}
+.chip.정기시험{background:var(--red-light);color:var(--red);}
+.chip.수행평가{background:var(--amber-light);color:var(--amber);}
+.chip.모의고사{background:#FDE8F5;color:#A0208A;}
+.chip.과제{background:var(--accent-light);color:var(--accent);}
 .more{font-size:10px;color:var(--text3);padding-left:2px;}
 
 /* ── Sidebar ── */
@@ -210,12 +210,12 @@ body{
 }
 .ev-row:hover{box-shadow:0 2px 8px rgba(0,0,0,0.07);}
 .ev-bar{width:3px;border-radius:2px;align-self:stretch;min-height:30px;flex-shrink:0;}
-.ev-bar.시험{background:var(--red);}
-.ev-bar.과제{background:var(--amber);}
-.ev-bar.수업{background:var(--green);}
-.ev-bar.공지{background:var(--accent);}
-.ev-bar.행사{background:var(--purple);}
-.ev-bar.기타{background:var(--text3);}
+.ev-bar.주요행사{background:var(--purple);}
+.ev-bar.방학{background:var(--green);}
+.ev-bar.정기시험{background:var(--red);}
+.ev-bar.수행평가{background:var(--amber);}
+.ev-bar.모의고사{background:#A0208A;}
+.ev-bar.과제{background:var(--accent);}
 .ev-info{flex:1;}
 .ev-title{font-size:13px;font-weight:500;color:var(--text);}
 .ev-meta{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4;}
@@ -229,12 +229,12 @@ body{
   margin-left:4px;
   vertical-align:middle;
 }
-.badge.시험{background:var(--red-light);color:var(--red);}
-.badge.과제{background:var(--amber-light);color:var(--amber);}
-.badge.수업{background:var(--green-light);color:var(--green);}
-.badge.공지{background:var(--accent-light);color:var(--accent);}
-.badge.행사{background:var(--purple-light);color:var(--purple);}
-.badge.기타{background:var(--surface2);color:var(--text2);}
+.badge.주요행사{background:var(--purple-light);color:var(--purple);}
+.badge.방학{background:var(--green-light);color:var(--green);}
+.badge.정기시험{background:var(--red-light);color:var(--red);}
+.badge.수행평가{background:var(--amber-light);color:var(--amber);}
+.badge.모의고사{background:#FDE8F5;color:#A0208A;}
+.badge.과제{background:var(--accent-light);color:var(--accent);}
 
 .empty{text-align:center;padding:1.5rem 1rem;font-size:12px;color:var(--text3);}
 
@@ -273,12 +273,12 @@ body{
   font-size:11px;color:var(--text2);
 }
 .legend-dot{width:8px;height:8px;border-radius:50%;}
-.legend-dot.시험{background:var(--red);}
-.legend-dot.과제{background:var(--amber);}
-.legend-dot.수업{background:var(--green);}
-.legend-dot.공지{background:var(--accent);}
-.legend-dot.행사{background:var(--purple);}
-.legend-dot.기타{background:var(--text3);}
+.legend-dot.주요행사{background:var(--purple);}
+.legend-dot.방학{background:var(--green);}
+.legend-dot.정기시험{background:var(--red);}
+.legend-dot.수행평가{background:var(--amber);}
+.legend-dot.모의고사{background:#A0208A;}
+.legend-dot.과제{background:var(--accent);}
 
 /* ── How-to banner ── */
 .howto{
@@ -334,12 +334,12 @@ body{
       </div>
       <div class="cal-grid" id="calGrid"></div>
       <div class="legend">
-        <div class="legend-item"><div class="legend-dot 시험"></div>시험</div>
+        <div class="legend-item"><div class="legend-dot 주요행사"></div>주요행사</div>
+        <div class="legend-item"><div class="legend-dot 방학"></div>방학</div>
+        <div class="legend-item"><div class="legend-dot 정기시험"></div>정기시험</div>
+        <div class="legend-item"><div class="legend-dot 수행평가"></div>수행평가</div>
+        <div class="legend-item"><div class="legend-dot 모의고사"></div>모의고사</div>
         <div class="legend-item"><div class="legend-dot 과제"></div>과제</div>
-        <div class="legend-item"><div class="legend-dot 수업"></div>수업</div>
-        <div class="legend-item"><div class="legend-dot 공지"></div>공지</div>
-        <div class="legend-item"><div class="legend-dot 행사"></div>행사</div>
-        <div class="legend-item"><div class="legend-dot 기타"></div>기타</div>
       </div>
     </div>
 
@@ -380,7 +380,7 @@ body{
       <strong>시트 열 순서</strong><br>
       A열: 날짜 (예: 2025-04-20)<br>
       B열: 제목<br>
-      C열: 종류 (시험/과제/수업/공지/행사/기타)<br>
+      C열: 종류 (주요행사/방학/정기시험/수행평가/모의고사/과제)<br>
       D열: 내용 (선택)
     </div>
   </div>
