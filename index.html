@@ -1,357 +1,270 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>학사일정</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --bg:#F4F2ED;
+  --bg:#F2F2F7;
   --surface:#FFFFFF;
-  --surface2:#ECEAE3;
-  --border:rgba(0,0,0,0.08);
-  --border2:rgba(0,0,0,0.15);
-  --text:#1C1A16;
-  --text2:#6B6758;
-  --text3:#B0AD9F;
-  --accent:#1A4D7A;
-  --accent-light:#E6F0FA;
-  --green:#1E6645;
-  --green-light:#E6F4ED;
-  --red:#B83232;
-  --red-light:#FAEBEB;
-  --amber:#A06010;
-  --amber-light:#FBF3E2;
-  --purple:#5A3A9A;
-  --purple-light:#F0EBF9;
-  --radius:14px;
+  --surface2:rgba(118,118,128,0.12);
+  --surface3:rgba(118,118,128,0.06);
+  --border:rgba(60,60,67,0.1);
+  --border2:rgba(60,60,67,0.18);
+  --text:#000000;
+  --text2:rgba(60,60,67,0.6);
+  --text3:rgba(60,60,67,0.3);
+  --blue:#007AFF;
+  --blue-light:rgba(0,122,255,0.1);
+  --green:#34C759;
+  --green-light:rgba(52,199,89,0.12);
+  --red:#FF3B30;
+  --red-light:rgba(255,59,48,0.1);
+  --amber:#FF9500;
+  --amber-light:rgba(255,149,0,0.1);
+  --purple:#AF52DE;
+  --purple-light:rgba(175,82,222,0.1);
+  --pink:#FF2D55;
+  --pink-light:rgba(255,45,85,0.1);
+  --radius:12px;
+  --radius-lg:16px;
 }
 
 body{
-  font-family:'Noto Sans KR',sans-serif;
+  font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
   background:var(--bg);
   color:var(--text);
   min-height:100vh;
-  padding:0 0 5rem;
+  padding:0 0 6rem;
+  -webkit-font-smoothing:antialiased;
 }
 
-/* ── Header ── */
 .site-header{
-  background:var(--surface);
+  background:rgba(242,242,247,0.85);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
   border-bottom:0.5px solid var(--border);
-  padding:1.25rem 2rem;
+  padding:0 1.5rem;
+  height:52px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:100;
+  position:sticky;top:0;z-index:100;
 }
-.logo{
-  font-family:'Playfair Display',serif;
-  font-size:1.5rem;
-  color:var(--text);
-  letter-spacing:-0.01em;
-}
-.logo em{color:var(--accent);font-style:normal;}
-.header-right{display:flex;align-items:center;gap:10px;}
-.today-badge{
-  font-size:12px;
-  color:var(--text2);
-  background:var(--surface2);
-  border:0.5px solid var(--border2);
-  border-radius:20px;
-  padding:5px 12px;
-}
+.logo{font-size:17px;font-weight:600;letter-spacing:-0.02em;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.today-badge{font-size:12px;color:var(--text2);}
 .sync-btn{
-  font-size:12px;
-  font-weight:500;
-  font-family:'Noto Sans KR',sans-serif;
-  color:var(--accent);
-  background:var(--accent-light);
-  border:0.5px solid rgba(26,77,122,0.2);
-  border-radius:8px;
-  padding:5px 14px;
-  cursor:pointer;
-  transition:background 0.15s;
+  font-size:15px;font-weight:400;font-family:inherit;
+  color:var(--blue);background:none;border:none;cursor:pointer;
+  padding:5px 10px;border-radius:8px;transition:background 0.15s;
+  display:flex;align-items:center;gap:5px;
 }
-.sync-btn:hover{background:#D0E4F5;}
-.sync-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.sync-btn:hover{background:var(--blue-light);}
+.sync-btn:disabled{opacity:0.4;cursor:not-allowed;}
 
-/* ── Layout ── */
 .main{
-  max-width:960px;
-  margin:0 auto;
-  padding:1.75rem 1.25rem 0;
-  display:grid;
-  grid-template-columns:1fr 300px;
-  gap:1.25rem;
-  align-items:start;
+  max-width:960px;margin:0 auto;
+  padding:1.25rem 1rem 0;
+  display:grid;grid-template-columns:1fr 310px;
+  gap:1rem;align-items:start;
 }
 @media(max-width:720px){
   .main{grid-template-columns:1fr;}
   .sidebar{order:-1;}
 }
 
-/* ── Card ── */
 .card{
   background:var(--surface);
-  border-radius:var(--radius);
-  border:0.5px solid var(--border);
+  border-radius:var(--radius-lg);
   overflow:hidden;
+  margin-bottom:1rem;
 }
 .card-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:1.1rem 1.4rem;
-  border-bottom:0.5px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.25rem 0.75rem;
 }
-.card-title{font-size:15px;font-weight:500;}
+.card-title{font-size:17px;font-weight:600;letter-spacing:-0.02em;}
 
-/* ── Calendar ── */
-.cal-nav{display:flex;align-items:center;gap:8px;}
-.month-label{font-size:16px;font-weight:500;min-width:110px;text-align:center;}
+.cal-nav{display:flex;align-items:center;gap:4px;}
+.month-label{font-size:17px;font-weight:600;min-width:100px;letter-spacing:-0.02em;}
 .nav-btn{
-  width:30px;height:30px;
-  border:0.5px solid var(--border2);
-  border-radius:8px;
-  background:none;cursor:pointer;
-  font-size:15px;color:var(--text2);
+  width:28px;height:28px;border:none;border-radius:50%;
+  background:var(--surface2);cursor:pointer;
+  font-size:14px;color:var(--blue);font-weight:600;
   display:flex;align-items:center;justify-content:center;
-  transition:background 0.13s;
+  transition:background 0.12s;
 }
-.nav-btn:hover{background:var(--surface2);color:var(--text);}
+.nav-btn:hover{background:var(--blue-light);}
 
 .day-names{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  border-bottom:0.5px solid var(--border);
+  display:grid;grid-template-columns:repeat(7,1fr);
+  padding:0 0.5rem;margin-bottom:2px;
 }
 .day-name{
-  text-align:center;
-  font-size:11px;
-  font-weight:500;
-  color:var(--text3);
-  padding:8px 2px;
-  letter-spacing:0.04em;
+  text-align:center;font-size:11px;font-weight:500;
+  color:var(--text3);padding:5px 2px;letter-spacing:0.02em;
 }
-.day-name:first-child{color:#C04040;}
+.day-name:first-child{color:var(--red);}
+.day-name:last-child{color:var(--blue);}
 
 .cal-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
+  display:grid;grid-template-columns:repeat(7,1fr);
+  padding:0 0.5rem 0.75rem;gap:2px;
 }
 .day-cell{
-  border-right:0.5px solid var(--border);
-  border-bottom:0.5px solid var(--border);
-  padding:5px 4px;
-  min-height:80px;
-  cursor:pointer;
-  transition:background 0.1s;
-  position:relative;
+  padding:4px 3px;min-height:68px;cursor:pointer;
+  border-radius:10px;transition:background 0.1s;
 }
-.day-cell:nth-child(7n){border-right:none;}
 .day-cell:hover{background:var(--surface2);}
-.day-cell.other-month{background:#FAFAF7;}
 .day-cell.other-month .dn{color:var(--text3);}
-.day-cell.is-today{background:#EFF5FC;}
 .day-cell.is-today .dn{
-  background:var(--accent);
-  color:#fff;
-  border-radius:50%;
-  width:22px;height:22px;
-  display:flex;align-items:center;justify-content:center;
+  background:var(--blue);color:#fff;border-radius:50%;
+  width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  font-weight:600;
 }
-.day-cell.is-selected{background:var(--accent-light);outline:2px solid var(--accent);outline-offset:-2px;}
+.day-cell.is-selected{background:var(--blue-light);}
 .dn{
-  font-size:12px;
-  color:var(--text);
-  margin-bottom:3px;
-  width:22px;height:22px;
+  font-size:13px;font-weight:400;color:var(--text);
+  margin-bottom:4px;width:24px;height:24px;
   display:flex;align-items:center;justify-content:center;
 }
-.day-cell:nth-child(7n+1) .dn{color:#C04040;}
+.day-cell:nth-child(7n+1) .dn{color:var(--red);}
+.day-cell.other-month:nth-child(7n+1) .dn{color:rgba(255,59,48,0.3);}
 
-.chip{
-  font-size:10px;
-  font-weight:500;
-  padding:2px 5px;
-  border-radius:4px;
-  margin-bottom:2px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:100%;
-  display:block;
-}
-.chip.주요행사{background:var(--purple-light);color:var(--purple);}
-.chip.방학{background:var(--green-light);color:var(--green);}
-.chip.정기시험{background:var(--red-light);color:var(--red);}
-.chip.수행평가{background:var(--amber-light);color:var(--amber);}
-.chip.모의고사{background:#FDE8F5;color:#A0208A;}
-.chip.과제{background:var(--accent-light);color:var(--accent);}
-.more{font-size:10px;color:var(--text3);padding-left:2px;}
+.dot-row{display:flex;gap:3px;flex-wrap:wrap;padding:0 2px;}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.dot.주요행사{background:var(--purple);}
+.dot.방학{background:var(--green);}
+.dot.정기시험{background:var(--red);}
+.dot.수행평가{background:var(--amber);}
+.dot.모의고사{background:var(--pink);}
+.dot.과제{background:var(--blue);}
 
-/* ── Sidebar ── */
-.sidebar{display:flex;flex-direction:column;gap:1.25rem;}
-
-.filter-wrap{padding:0.75rem 1rem 0;display:flex;flex-wrap:wrap;gap:5px;}
-.filter-btn{
-  font-size:11px;font-weight:500;
-  font-family:'Noto Sans KR',sans-serif;
-  padding:3px 10px;
-  border-radius:20px;
-  border:0.5px solid var(--border2);
-  background:var(--surface2);
-  color:var(--text2);
-  cursor:pointer;
-  transition:all 0.13s;
-}
-.filter-btn:hover{background:var(--surface);color:var(--text);}
-.filter-btn.active{border-color:transparent;color:#fff;}
-.filter-btn.active.주요행사{background:var(--purple);}
-.filter-btn.active.방학{background:var(--green);}
-.filter-btn.active.정기시험{background:var(--red);}
-.filter-btn.active.수행평가{background:var(--amber);}
-.filter-btn.active.모의고사{background:#A0208A;}
-.filter-btn.active.과제{background:var(--accent);}
-.filter-btn.active.전체{background:var(--text);}
-
-.upcoming-list{padding:0 1rem 1rem;display:flex;flex-direction:column;gap:8px;margin-top:0.75rem;}
-.ev-row{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:10px 12px;
-  border:0.5px solid var(--border);
-  border-radius:10px;
-  transition:box-shadow 0.13s;
-}
-.ev-row:hover{box-shadow:0 2px 8px rgba(0,0,0,0.07);}
-.ev-bar{width:3px;border-radius:2px;align-self:stretch;min-height:30px;flex-shrink:0;}
-.ev-bar.주요행사{background:var(--purple);}
-.ev-bar.방학{background:var(--green);}
-.ev-bar.정기시험{background:var(--red);}
-.ev-bar.수행평가{background:var(--amber);}
-.ev-bar.모의고사{background:#A0208A;}
-.ev-bar.과제{background:var(--accent);}
-.ev-info{flex:1;}
-.ev-title{font-size:13px;font-weight:500;color:var(--text);}
-.ev-meta{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4;}
-
-.badge{
-  display:inline-block;
-  font-size:10px;
-  font-weight:500;
-  padding:2px 7px;
-  border-radius:10px;
-  margin-left:4px;
-  vertical-align:middle;
-}
-.badge.주요행사{background:var(--purple-light);color:var(--purple);}
-.badge.방학{background:var(--green-light);color:var(--green);}
-.badge.정기시험{background:var(--red-light);color:var(--red);}
-.badge.수행평가{background:var(--amber-light);color:var(--amber);}
-.badge.모의고사{background:#FDE8F5;color:#A0208A;}
-.badge.과제{background:var(--accent-light);color:var(--accent);}
-
-.empty{text-align:center;padding:1.5rem 1rem;font-size:12px;color:var(--text3);}
-
-/* ── Detail panel ── */
-.detail-panel{
-  padding:1rem 1.4rem 1.4rem;
-  display:flex;flex-direction:column;gap:8px;
-}
-.detail-date{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:4px;}
-
-/* ── Loading/Error ── */
-.state-msg{
-  text-align:center;
-  padding:3rem 1rem;
-  font-size:13px;
-  color:var(--text2);
-}
-.spinner{
-  width:20px;height:20px;
-  border:2px solid var(--border2);
-  border-top-color:var(--accent);
-  border-radius:50%;
-  animation:spin 0.7s linear infinite;
-  margin:0 auto 10px;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* ── Legend ── */
 .legend{
-  display:flex;flex-wrap:wrap;gap:6px;
-  padding:0.9rem 1.4rem;
+  display:flex;flex-wrap:wrap;gap:10px;
+  padding:0.75rem 1.25rem;
   border-top:0.5px solid var(--border);
 }
-.legend-item{
-  display:flex;align-items:center;gap:5px;
-  font-size:11px;color:var(--text2);
-}
-.legend-dot{width:8px;height:8px;border-radius:50%;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
+.legend-dot{width:7px;height:7px;border-radius:50%;}
 .legend-dot.주요행사{background:var(--purple);}
 .legend-dot.방학{background:var(--green);}
 .legend-dot.정기시험{background:var(--red);}
 .legend-dot.수행평가{background:var(--amber);}
-.legend-dot.모의고사{background:#A0208A;}
-.legend-dot.과제{background:var(--accent);}
+.legend-dot.모의고사{background:var(--pink);}
+.legend-dot.과제{background:var(--blue);}
 
-/* ── How-to banner ── */
-.howto{
-  background:var(--surface);
-  border:0.5px solid var(--border);
-  border-radius:var(--radius);
-  padding:1.1rem 1.4rem;
-  font-size:12px;
-  color:var(--text2);
-  line-height:1.8;
+.sidebar{display:flex;flex-direction:column;gap:0;}
+
+.filter-wrap{padding:0 1.25rem 0.75rem;display:flex;flex-wrap:wrap;gap:6px;}
+.filter-btn{
+  font-size:12px;font-weight:500;font-family:inherit;
+  padding:4px 12px;border-radius:20px;border:none;
+  background:var(--surface2);color:var(--text2);
+  cursor:pointer;transition:all 0.15s;
 }
-.howto strong{color:var(--text);font-weight:500;}
-.howto a{color:var(--accent);text-decoration:none;}
-.howto a:hover{text-decoration:underline;}
+.filter-btn:hover{opacity:0.8;}
+.filter-btn.active{color:#fff;}
+.filter-btn.active.전체{background:#1C1C1E;}
+.filter-btn.active.주요행사{background:var(--purple);}
+.filter-btn.active.방학{background:var(--green);}
+.filter-btn.active.정기시험{background:var(--red);}
+.filter-btn.active.수행평가{background:var(--amber);}
+.filter-btn.active.모의고사{background:var(--pink);}
+.filter-btn.active.과제{background:var(--blue);}
+
+.upcoming-list{padding:0 0 0.5rem;display:flex;flex-direction:column;}
+.ev-row{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px 1.25rem;
+  border-bottom:0.5px solid var(--border);
+  transition:background 0.1s;
+}
+.ev-row:last-child{border-bottom:none;}
+.ev-row:hover{background:var(--surface2);}
+.ev-dot{
+  width:9px;height:9px;border-radius:50%;
+  flex-shrink:0;margin-top:4px;
+}
+.ev-dot.주요행사{background:var(--purple);}
+.ev-dot.방학{background:var(--green);}
+.ev-dot.정기시험{background:var(--red);}
+.ev-dot.수행평가{background:var(--amber);}
+.ev-dot.모의고사{background:var(--pink);}
+.ev-dot.과제{background:var(--blue);}
+.ev-info{flex:1;}
+.ev-title{font-size:14px;font-weight:500;color:var(--text);line-height:1.35;}
+.ev-meta{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4;}
+
+.badge{
+  display:inline-block;font-size:10px;font-weight:500;
+  padding:1px 6px;border-radius:6px;margin-left:5px;vertical-align:middle;
+}
+.badge.주요행사{background:var(--purple-light);color:var(--purple);}
+.badge.방학{background:var(--green-light);color:#248A3D;}
+.badge.정기시험{background:var(--red-light);color:var(--red);}
+.badge.수행평가{background:var(--amber-light);color:#C93400;}
+.badge.모의고사{background:var(--pink-light);color:var(--pink);}
+.badge.과제{background:var(--blue-light);color:var(--blue);}
+
+.empty{text-align:center;padding:2rem 1rem;font-size:13px;color:var(--text3);}
+.detail-panel{padding:0 0 0.5rem;display:flex;flex-direction:column;}
+
+.state-msg{text-align:center;padding:2rem 1rem;font-size:13px;color:var(--text2);}
+.spinner{
+  width:18px;height:18px;
+  border:2px solid var(--border2);border-top-color:var(--blue);
+  border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 10px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.howto{
+  background:var(--surface);border-radius:var(--radius-lg);
+  padding:1rem 1.25rem;font-size:12px;color:var(--text2);
+  line-height:1.9;margin-bottom:1rem;
+}
+.howto strong{color:var(--text);font-weight:600;}
 
 @media(max-width:520px){
-  .site-header{padding:1rem;}
-  .logo{font-size:1.25rem;}
+  .site-header{padding:0 1rem;}
   .today-badge{display:none;}
-  .day-cell{min-height:56px;}
+  .day-cell{min-height:50px;}
+  .main{padding:0.75rem 0.75rem 0;}
 }
 </style>
 </head>
 <body>
 
 <header class="site-header">
-  <div class="logo">학사<em>일정</em></div>
+  <div class="logo">학사일정</div>
   <div class="header-right">
     <div class="today-badge" id="todayBadge"></div>
-    <button class="sync-btn" id="syncBtn">↻ 새로고침</button>
+    <button class="sync-btn" id="syncBtn">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13.5 8A5.5 5.5 0 1 1 8 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 1v3.5L10.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      새로고침
+    </button>
   </div>
 </header>
 
 <div class="main">
-  <!-- Left: Calendar -->
   <div>
-    <div class="card" style="margin-bottom:1.25rem;">
+    <div class="card">
       <div class="card-head">
+        <div class="month-label" id="monthLabel"></div>
         <div class="cal-nav">
           <button class="nav-btn" id="prevBtn">‹</button>
-          <div class="month-label" id="monthLabel"></div>
           <button class="nav-btn" id="nextBtn">›</button>
         </div>
       </div>
       <div class="day-names">
-        <div class="day-name">일</div>
-        <div class="day-name">월</div>
-        <div class="day-name">화</div>
-        <div class="day-name">수</div>
-        <div class="day-name">목</div>
-        <div class="day-name">금</div>
+        <div class="day-name">일</div><div class="day-name">월</div>
+        <div class="day-name">화</div><div class="day-name">수</div>
+        <div class="day-name">목</div><div class="day-name">금</div>
         <div class="day-name">토</div>
       </div>
       <div class="cal-grid" id="calGrid"></div>
@@ -365,21 +278,17 @@ body{
       </div>
     </div>
 
-    <!-- Selected day detail -->
     <div class="card" id="detailCard" style="display:none;">
       <div class="card-head">
-        <div class="card-title" id="detailTitle">선택한 날짜</div>
+        <div class="card-title" id="detailTitle"></div>
       </div>
       <div class="detail-panel" id="detailPanel"></div>
     </div>
   </div>
 
-  <!-- Right: Sidebar -->
   <div class="sidebar">
     <div class="card">
-      <div class="card-head">
-        <div class="card-title">📌 다가오는 일정</div>
-      </div>
+      <div class="card-head"><div class="card-title">다가오는 일정</div></div>
       <div class="filter-wrap" id="filterWrap">
         <button class="filter-btn active 전체" data-type="전체">전체</button>
         <button class="filter-btn 주요행사" data-type="주요행사">주요행사</button>
@@ -395,264 +304,159 @@ body{
     </div>
 
     <div class="card">
-      <div class="card-head">
-        <div class="card-title">📋 이번 달 전체</div>
-      </div>
+      <div class="card-head"><div class="card-title" id="monthListTitle">이번 달</div></div>
       <div class="upcoming-list" id="monthList">
         <div class="empty">불러오는 중...</div>
       </div>
     </div>
 
-    <!-- How to update -->
     <div class="howto">
-      <strong>일정 업데이트 방법</strong><br>
-      Google 스프레드시트에 행을 추가하면<br>
-      새로고침 버튼을 눌렀을 때 자동 반영돼요.<br><br>
-      <strong>시트 열 순서</strong><br>
-      A열: 날짜 (예: 2025-04-20)<br>
-      B열: 제목<br>
-      C열: 종류 (주요행사/방학/정기시험/수행평가/모의고사/과제)<br>
-      D열: 내용 (선택)
+      <strong>일정 추가 방법</strong><br>
+      Google 스프레드시트에 행을 추가하고 새로고침을 누르면 반영돼요.<br><br>
+      <strong>열 순서</strong><br>
+      A: 날짜 &nbsp;·&nbsp; B: 제목 &nbsp;·&nbsp; C: 종류 &nbsp;·&nbsp; D: 내용
     </div>
   </div>
 </div>
 
 <script>
-// ── 설정 ──────────────────────────────────────────
-const SHEET_ID = '10Za-76beF_IGoFV6Ub7vfSKDXv0hCSYwzApeF-DjyS4';
-const SHEET_NAME = 'Sheet1'; // 시트 탭 이름 (기본값: Sheet1)
-// ─────────────────────────────────────────────────
-
-const today = new Date();
-today.setHours(0,0,0,0);
-let cur = { y: today.getFullYear(), m: today.getMonth() };
-let events = [];
-let selectedDate = null;
+const SHEET_ID='10Za-76beF_IGoFV6Ub7vfSKDXv0hCSYwzApeF-DjyS4';
+const SHEET_NAME='Sheet1';
+const today=new Date();today.setHours(0,0,0,0);
+let cur={y:today.getFullYear(),m:today.getMonth()};
+let events=[],selectedDate=null;
 
 function df(d){
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,'0');
-  const day=String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${day}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-function todayStr(){ return df(today); }
+function todayStr(){return df(today);}
 function parseDate(s){
-  if(!s) return null;
-  const m = s.trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(!m) return null;
-  return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
+  if(!s)return null;
+  const m=s.trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m?new Date(+m[1],+m[2]-1,+m[3]):null;
 }
 function fmtDate(s){
-  const d = parseDate(s);
-  if(!d) return s;
+  const d=parseDate(s);if(!d)return s;
   return `${d.getMonth()+1}월 ${d.getDate()}일 (${['일','월','화','수','목','금','토'][d.getDay()]})`;
 }
 
-// Today badge
-document.getElementById('todayBadge').textContent =
-  today.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+document.getElementById('todayBadge').textContent=
+  today.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'});
 
-// Fetch from Google Sheets (CSV export)
 async function fetchEvents(){
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
-  const res = await fetch(url);
-  if(!res.ok) throw new Error('시트를 불러올 수 없어요');
-  const text = await res.text();
-  return parseCSV(text);
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+  const res=await fetch(url);
+  if(!res.ok)throw new Error();
+  return parseCSV(await res.text());
 }
-
 function parseCSV(text){
-  const lines = text.trim().split('\n');
-  // skip header row
-  const data = lines.slice(1).map(line=>{
-    const cols = [];
-    let cur2='', inQ=false;
+  return text.trim().split('\n').slice(1).map(line=>{
+    const cols=[];let c2='',inQ=false;
     for(let c of line){
-      if(c==='"'){ inQ=!inQ; }
-      else if(c===',' && !inQ){ cols.push(cur2.trim()); cur2=''; }
-      else cur2+=c;
+      if(c==='"'){inQ=!inQ;}
+      else if(c===','&&!inQ){cols.push(c2.trim());c2='';}
+      else c2+=c;
     }
-    cols.push(cur2.trim());
-    return cols;
-  }).filter(c=>c[0]);
-  return data.map(c=>({
-    date: c[0]||'',
-    title: c[1]||'',
-    type: (c[2]||'기타').trim(),
-    note: c[3]||''
-  })).filter(e=>e.date && e.title);
+    cols.push(c2.trim());return cols;
+  }).filter(c=>c[0]).map(c=>({
+    date:c[0]||'',title:c[1]||'',type:(c[2]||'기타').trim(),note:c[3]||''
+  })).filter(e=>e.date&&e.title);
 }
 
 async function load(){
-  const btn = document.getElementById('syncBtn');
-  btn.disabled = true;
-  btn.textContent = '불러오는 중...';
-  document.getElementById('upcomingList').innerHTML = '<div class="state-msg"><div class="spinner"></div>불러오는 중...</div>';
-  document.getElementById('monthList').innerHTML = '<div class="empty">불러오는 중...</div>';
-  try{
-    events = await fetchEvents();
-    render();
-  } catch(e){
-    document.getElementById('upcomingList').innerHTML =
-      `<div class="state-msg" style="color:#B83232;">⚠ 시트를 불러오지 못했어요<br><small>시트가 '링크 공유'로 설정되어 있는지 확인해주세요</small></div>`;
-    document.getElementById('monthList').innerHTML = '<div class="empty">—</div>';
+  const btn=document.getElementById('syncBtn');btn.disabled=true;
+  document.getElementById('upcomingList').innerHTML='<div class="state-msg"><div class="spinner"></div>불러오는 중...</div>';
+  document.getElementById('monthList').innerHTML='<div class="empty">불러오는 중...</div>';
+  try{events=await fetchEvents();render();}
+  catch(e){
+    document.getElementById('upcomingList').innerHTML='<div class="state-msg" style="color:var(--red);">시트를 불러오지 못했어요<br><small style="color:var(--text3)">링크 공유 설정을 확인해주세요</small></div>';
+    document.getElementById('monthList').innerHTML='<div class="empty">—</div>';
   }
-  btn.disabled = false;
-  btn.textContent = '↻ 새로고침';
+  btn.disabled=false;
 }
 
-function render(){
-  renderCal();
-  renderUpcoming();
-  renderMonthList();
-}
+function render(){renderCal();renderUpcoming();renderMonthList();}
 
-// ── Calendar ──
 function renderCal(){
-  document.getElementById('monthLabel').textContent = `${cur.y}년 ${cur.m+1}월`;
-  const grid = document.getElementById('calGrid');
-  const firstDay = new Date(cur.y, cur.m, 1).getDay();
-  const lastDate = new Date(cur.y, cur.m+1, 0).getDate();
-  const prevLast = new Date(cur.y, cur.m, 0).getDate();
-  let cells = [];
-  for(let i=firstDay-1;i>=0;i--){
-    const d=new Date(cur.y,cur.m-1,prevLast-i);
-    cells.push({ds:df(d),label:prevLast-i,other:true});
-  }
-  for(let d=1;d<=lastDate;d++){
-    const date=new Date(cur.y,cur.m,d);
-    cells.push({ds:df(date),label:d,other:false});
-  }
-  while(cells.length%7!==0){
-    const n=cells.length-firstDay-lastDate+1;
-    const d=new Date(cur.y,cur.m+1,n);
-    cells.push({ds:df(d),label:n,other:true});
-  }
-  let html='';
-  cells.forEach(cell=>{
-    const isT=cell.ds===todayStr();
-    const isSel=cell.ds===selectedDate;
+  document.getElementById('monthLabel').textContent=`${cur.y}년 ${cur.m+1}월`;
+  const grid=document.getElementById('calGrid');
+  const firstDay=new Date(cur.y,cur.m,1).getDay();
+  const lastDate=new Date(cur.y,cur.m+1,0).getDate();
+  const prevLast=new Date(cur.y,cur.m,0).getDate();
+  let cells=[];
+  for(let i=firstDay-1;i>=0;i--) cells.push({ds:df(new Date(cur.y,cur.m-1,prevLast-i)),label:prevLast-i,other:true});
+  for(let d=1;d<=lastDate;d++) cells.push({ds:df(new Date(cur.y,cur.m,d)),label:d,other:false});
+  while(cells.length%7!==0) cells.push({ds:df(new Date(cur.y,cur.m+1,cells.length-firstDay-lastDate+1)),label:cells.length-firstDay-lastDate+1,other:true});
+  grid.innerHTML=cells.map(cell=>{
+    const isT=cell.ds===todayStr(),isSel=cell.ds===selectedDate;
     const dayEvs=events.filter(e=>e.date.slice(0,10)===cell.ds);
-    let cls='day-cell';
-    if(cell.other) cls+=' other-month';
-    if(isT) cls+=' is-today';
-    if(isSel) cls+=' is-selected';
-    const chips=dayEvs.slice(0,2).map(e=>
-      `<span class="chip ${e.type}">${e.title}</span>`
-    ).join('');
-    const more=dayEvs.length>2?`<span class="more">+${dayEvs.length-2}</span>`:'';
-    html+=`<div class="${cls}" data-date="${cell.ds}"><div class="dn">${cell.label}</div>${chips}${more}</div>`;
-  });
-  grid.innerHTML=html;
-  grid.querySelectorAll('.day-cell').forEach(el=>{
-    el.addEventListener('click',()=>{
-      selectedDate = selectedDate===el.dataset.date ? null : el.dataset.date;
-      renderCal();
-      renderDetail();
-    });
-  });
+    let cls='day-cell'+(cell.other?' other-month':'')+(isT?' is-today':'')+(isSel?' is-selected':'');
+    const dots=dayEvs.slice(0,5).map(e=>`<div class="dot ${e.type}"></div>`).join('');
+    return `<div class="${cls}" data-date="${cell.ds}"><div class="dn">${cell.label}</div>${dots?`<div class="dot-row">${dots}</div>`:''}</div>`;
+  }).join('');
+  grid.querySelectorAll('.day-cell').forEach(el=>el.addEventListener('click',()=>{
+    selectedDate=selectedDate===el.dataset.date?null:el.dataset.date;
+    renderCal();renderDetail();
+  }));
 }
 
 function renderDetail(){
-  const card=document.getElementById('detailCard');
-  const panel=document.getElementById('detailPanel');
-  const title=document.getElementById('detailTitle');
+  const card=document.getElementById('detailCard'),panel=document.getElementById('detailPanel'),title=document.getElementById('detailTitle');
   if(!selectedDate){card.style.display='none';return;}
   const dayEvs=events.filter(e=>e.date.slice(0,10)===selectedDate);
-  card.style.display='block';
-  title.textContent=fmtDate(selectedDate);
-  if(!dayEvs.length){
-    panel.innerHTML='<div class="empty">이 날은 등록된 일정이 없어요</div>';
-    return;
-  }
-  panel.innerHTML=dayEvs.map(e=>`
-    <div class="ev-row">
-      <div class="ev-bar ${e.type}"></div>
-      <div class="ev-info">
-        <div class="ev-title">${e.title}<span class="badge ${e.type}">${e.type}</span></div>
-        ${e.note?`<div class="ev-meta">${e.note}</div>`:''}
-      </div>
-    </div>
-  `).join('');
+  card.style.display='block';title.textContent=fmtDate(selectedDate);
+  panel.innerHTML=dayEvs.length?dayEvs.map(e=>`
+    <div class="ev-row"><div class="ev-dot ${e.type}"></div>
+    <div class="ev-info"><div class="ev-title">${e.title}<span class="badge ${e.type}">${e.type}</span></div>
+    ${e.note?`<div class="ev-meta">${e.note}</div>`:''}</div></div>`).join('')
+    :'<div class="empty">등록된 일정이 없어요</div>';
 }
 
-// ── Filter ──
-let activeFilter = '전체';
-document.getElementById('filterWrap').addEventListener('click', e => {
-  const btn = e.target.closest('.filter-btn');
-  if(!btn) return;
-  activeFilter = btn.dataset.type;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderUpcoming();
+let activeFilter='전체';
+document.getElementById('filterWrap').addEventListener('click',e=>{
+  const btn=e.target.closest('.filter-btn');if(!btn)return;
+  activeFilter=btn.dataset.type;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderUpcoming();
 });
 
-// ── Upcoming ──
 function renderUpcoming(){
   const list=document.getElementById('upcomingList');
-  const upcoming=events
-    .filter(e=>{
-      const d=parseDate(e.date);
-      if(!d || d<today) return false;
-      if(activeFilter==='전체') return true;
-      return e.type===activeFilter;
-    })
-    .sort((a,b)=>a.date.localeCompare(b.date))
-    .slice(0,10);
-  if(!upcoming.length){
-    list.innerHTML='<div class="empty">해당 일정이 없어요</div>';
-    return;
-  }
-  list.innerHTML=upcoming.map(e=>`
-    <div class="ev-row">
-      <div class="ev-bar ${e.type}"></div>
-      <div class="ev-info">
-        <div class="ev-title">${e.title}<span class="badge ${e.type}">${e.type}</span></div>
-        <div class="ev-meta">${fmtDate(e.date)}${e.note?' · '+e.note:''}</div>
-      </div>
-    </div>
-  `).join('');
+  const items=events.filter(e=>{
+    const d=parseDate(e.date);
+    return d&&d>=today&&(activeFilter==='전체'||e.type===activeFilter);
+  }).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,10);
+  list.innerHTML=items.length?items.map(e=>`
+    <div class="ev-row"><div class="ev-dot ${e.type}"></div>
+    <div class="ev-info"><div class="ev-title">${e.title}<span class="badge ${e.type}">${e.type}</span></div>
+    <div class="ev-meta">${fmtDate(e.date)}${e.note?' · '+e.note:''}</div></div></div>`).join('')
+    :'<div class="empty">해당 일정이 없어요</div>';
 }
 
-// ── Month list ──
 function renderMonthList(){
   const list=document.getElementById('monthList');
-  const monthEvs=events
-    .filter(e=>{
-      const d=parseDate(e.date);
-      return d && d.getFullYear()===cur.y && d.getMonth()===cur.m;
-    })
-    .sort((a,b)=>a.date.localeCompare(b.date));
-  if(!monthEvs.length){
-    list.innerHTML=`<div class="empty">${cur.m+1}월 일정이 없어요</div>`;
-    return;
-  }
-  list.innerHTML=monthEvs.map(e=>`
-    <div class="ev-row">
-      <div class="ev-bar ${e.type}"></div>
-      <div class="ev-info">
-        <div class="ev-title">${e.title}<span class="badge ${e.type}">${e.type}</span></div>
-        <div class="ev-meta">${fmtDate(e.date)}${e.note?' · '+e.note:''}</div>
-      </div>
-    </div>
-  `).join('');
+  document.getElementById('monthListTitle').textContent=`${cur.m+1}월 전체`;
+  const items=events.filter(e=>{
+    const d=parseDate(e.date);return d&&d.getFullYear()===cur.y&&d.getMonth()===cur.m;
+  }).sort((a,b)=>a.date.localeCompare(b.date));
+  list.innerHTML=items.length?items.map(e=>`
+    <div class="ev-row"><div class="ev-dot ${e.type}"></div>
+    <div class="ev-info"><div class="ev-title">${e.title}<span class="badge ${e.type}">${e.type}</span></div>
+    <div class="ev-meta">${fmtDate(e.date)}${e.note?' · '+e.note:''}</div></div></div>`).join('')
+    :`<div class="empty">${cur.m+1}월 일정이 없어요</div>`;
 }
 
-// ── Nav ──
 document.getElementById('prevBtn').onclick=()=>{
   cur.m--;if(cur.m<0){cur.m=11;cur.y--;}
-  selectedDate=null;
-  document.getElementById('detailCard').style.display='none';
+  selectedDate=null;document.getElementById('detailCard').style.display='none';
   renderCal();renderMonthList();
 };
 document.getElementById('nextBtn').onclick=()=>{
   cur.m++;if(cur.m>11){cur.m=0;cur.y++;}
-  selectedDate=null;
-  document.getElementById('detailCard').style.display='none';
+  selectedDate=null;document.getElementById('detailCard').style.display='none';
   renderCal();renderMonthList();
 };
 document.getElementById('syncBtn').onclick=load;
-
 load();
 </script>
 </body>
