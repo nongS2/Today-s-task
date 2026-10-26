@@ -144,6 +144,7 @@ body{
 .dot.수행평가{background:var(--amber);}
 .dot.모의고사{background:var(--pink);}
 .dot.과제{background:var(--blue);}
+.dot.기타{background:#8E8E93;}
 
 .legend{
   display:flex;flex-wrap:wrap;gap:10px;
@@ -197,6 +198,7 @@ body{
 .ev-dot.수행평가{background:var(--amber);}
 .ev-dot.모의고사{background:var(--pink);}
 .ev-dot.과제{background:var(--blue);}
+.ev-dot.기타{background:#8E8E93;}
 .ev-info{flex:1;}
 .ev-title{font-size:14px;font-weight:500;color:var(--text);line-height:1.35;}
 .ev-meta{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4;}
@@ -211,6 +213,7 @@ body{
 .badge.수행평가{background:var(--amber-light);color:#C93400;}
 .badge.모의고사{background:var(--pink-light);color:var(--pink);}
 .badge.과제{background:var(--blue-light);color:var(--blue);}
+.badge.기타{background:var(--surface2);color:var(--text2);}
 
 .empty{text-align:center;padding:2rem 1rem;font-size:13px;color:var(--text3);}
 .detail-panel{padding:0 0 0.5rem;display:flex;flex-direction:column;}
@@ -326,7 +329,7 @@ body{
       </div>
     </div>
 
-    <div class="howto">
+    <div class="howto" id="howto">
       <strong>일정 추가 방법</strong><br>
       Google 스프레드시트에 행을 추가하고 새로고침을 누르면 반영돼요.<br><br>
       <strong>열 순서</strong><br>
@@ -336,8 +339,11 @@ body{
 </div>
 
 <script>
+// 애플 캘린더 중계(Apps Script) 웹 앱 URL. 비워두면 구글 시트를 사용해요. (apple-calendar/README.md 참고)
+const ICS_PROXY_URL='';
 const SHEET_ID='10Za-76beF_IGoFV6Ub7vfSKDXv0hCSYwzApeF-DjyS4';
 const SHEET_NAME='Sheet1';
+const TYPES=['주요행사','방학','정기시험','수행평가','모의고사','과제'];
 const today=new Date();today.setHours(0,0,0,0);
 let cur={y:today.getFullYear(),m:today.getMonth()};
 let events=[],selectedDate=null;
@@ -356,10 +362,28 @@ function fmtDate(s){
   return `${d.getMonth()+1}월 ${d.getDate()}일 (${['일','월','화','수','목','금','토'][d.getDay()]})`;
 }
 
+function esc(s){
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function endOf(e){return e.end||e.date.slice(0,10);}
+function onDay(e,ds){return e.date.slice(0,10)<=ds&&ds<=endOf(e);}
+function fmtWhen(e){
+  let s=fmtDate(e.date);
+  if(e.end&&e.end!==e.date)s+=' ~ '+fmtDate(e.end);
+  if(e.time)s+=' '+e.time;
+  return s;
+}
+
 document.getElementById('todayBadge').textContent=
   today.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'});
 
 async function fetchEvents(){
+  if(ICS_PROXY_URL){
+    const res=await fetch(ICS_PROXY_URL);
+    const text=await res.text();
+    if(!res.ok||!text.includes('BEGIN:VCALENDAR'))throw new Error();
+    return parseICS(text);
+  }
   const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
   const res=await fetch(url);
   if(!res.ok)throw new Error();
@@ -379,13 +403,56 @@ function parseCSV(text){
   })).filter(e=>e.date&&e.title);
 }
 
+// iCal(.ics) 파싱: 제목 앞 [종류]로 색을 구분하고, 여러 날 일정은 end에 마지막 날을 담아요
+function parseICS(text){
+  const lines=text.replace(/\r?\n[ \t]/g,'').split(/\r?\n/);
+  const out=[];let ev=null;
+  for(const line of lines){
+    if(line==='BEGIN:VEVENT'){ev={};continue;}
+    if(line==='END:VEVENT'){if(ev&&ev.start&&ev.summary)out.push(icsEvent(ev));ev=null;continue;}
+    if(!ev)continue;
+    const i=line.indexOf(':');if(i<0)continue;
+    const name=line.slice(0,i).split(';')[0],val=line.slice(i+1);
+    if(name==='SUMMARY')ev.summary=icsText(val);
+    else if(name==='DESCRIPTION')ev.desc=icsText(val);
+    else if(name==='DTSTART')ev.start=icsDate(val);
+    else if(name==='DTEND')ev.end=icsDate(val);
+  }
+  return out;
+}
+function icsText(v){
+  return v.replace(/\\n/gi,' ').replace(/\\([,;\\])/g,'$1').trim();
+}
+function icsDate(v){
+  const m=v.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})(Z)?)?/);
+  if(!m)return null;
+  if(!m[4])return {d:new Date(+m[1],+m[2]-1,+m[3]),allDay:true};
+  const d=m[7]?new Date(Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5])):new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5]);
+  return {d,allDay:false};
+}
+function icsEvent(ev){
+  let type='기타',title=ev.summary;
+  const m=title.match(/^\s*\[([^\]]+)\]\s*(.*)$/);
+  if(m&&TYPES.includes(m[1].trim())){type=m[1].trim();title=m[2]||m[1];}
+  const s=ev.start.d,start=new Date(s.getFullYear(),s.getMonth(),s.getDate());
+  let last=null;
+  if(ev.end){
+    const e=ev.end.d;last=new Date(e.getFullYear(),e.getMonth(),e.getDate());
+    // 종일 일정의 DTEND는 '다음 날'이라 하루 빼요
+    if(ev.end.allDay||(e.getHours()===0&&e.getMinutes()===0))last.setDate(last.getDate()-1);
+  }
+  const time=ev.start.allDay?'':s.toLocaleTimeString('ko-KR',{hour:'numeric',minute:'2-digit'});
+  return {date:df(start),end:last&&last>start?df(last):'',title,type,note:ev.desc||'',time};
+}
+
 async function load(){
   const btn=document.getElementById('syncBtn');btn.disabled=true;
   document.getElementById('upcomingList').innerHTML='<div class="state-msg"><div class="spinner"></div>불러오는 중...</div>';
   document.getElementById('monthList').innerHTML='<div class="empty">불러오는 중...</div>';
   try{events=await fetchEvents();render();}
   catch(e){
-    document.getElementById('upcomingList').innerHTML='<div class="state-msg" style="color:var(--red);">시트를 불러오지 못했어요<br><small style="color:var(--text3)">링크 공유 설정을 확인해주세요</small></div>';
+    const hint=ICS_PROXY_URL?'캘린더 공개 설정과 Apps Script 배포를 확인해주세요':'링크 공유 설정을 확인해주세요';
+    document.getElementById('upcomingList').innerHTML=`<div class="state-msg" style="color:var(--red);">일정을 불러오지 못했어요<br><small style="color:var(--text3)">${hint}</small></div>`;
     document.getElementById('monthList').innerHTML='<div class="empty">—</div>';
   }
   btn.disabled=false;
@@ -409,13 +476,13 @@ function renderDday(){
   body.innerHTML=`
     <div class="dday-main">
       <div class="dday-num ${first.type}">${ddayLabel(first.d)}</div>
-      <div class="dday-title">${first.title}<span class="badge ${first.type}">${first.type}</span></div>
-      <div class="dday-date">${fmtDate(first.date)}</div>
+      <div class="dday-title">${esc(first.title)}<span class="badge ${first.type}">${first.type}</span></div>
+      <div class="dday-date">${fmtWhen(first)}</div>
     </div>
     ${rest.length?`<div class="dday-rest">${rest.map(e=>`
       <div class="ev-row"><div class="ev-dot ${e.type}"></div>
-      <div class="ev-info"><div class="ev-title">${e.title}</div>
-      <div class="ev-meta">${fmtDate(e.date)}</div></div>
+      <div class="ev-info"><div class="ev-title">${esc(e.title)}</div>
+      <div class="ev-meta">${fmtWhen(e)}</div></div>
       <div class="dday-small">${ddayLabel(e.d)}</div></div>`).join('')}</div>`:''}`;
 }
 
@@ -431,7 +498,7 @@ function renderCal(){
   while(cells.length%7!==0) cells.push({ds:df(new Date(cur.y,cur.m+1,cells.length-firstDay-lastDate+1)),label:cells.length-firstDay-lastDate+1,other:true});
   grid.innerHTML=cells.map(cell=>{
     const isT=cell.ds===todayStr(),isSel=cell.ds===selectedDate;
-    const dayEvs=events.filter(e=>e.date.slice(0,10)===cell.ds);
+    const dayEvs=events.filter(e=>onDay(e,cell.ds));
     let cls='day-cell'+(cell.other?' other-month':'')+(isT?' is-today':'')+(isSel?' is-selected':'');
     const dots=dayEvs.slice(0,5).map(e=>`<div class="dot ${e.type}"></div>`).join('');
     return `<div class="${cls}" data-date="${cell.ds}"><div class="dn">${cell.label}</div>${dots?`<div class="dot-row">${dots}</div>`:''}</div>`;
@@ -445,12 +512,12 @@ function renderCal(){
 function renderDetail(){
   const card=document.getElementById('detailCard'),panel=document.getElementById('detailPanel'),title=document.getElementById('detailTitle');
   if(!selectedDate){card.style.display='none';return;}
-  const dayEvs=events.filter(e=>e.date.slice(0,10)===selectedDate);
+  const dayEvs=events.filter(e=>onDay(e,selectedDate));
   card.style.display='block';title.textContent=fmtDate(selectedDate);
   panel.innerHTML=dayEvs.length?dayEvs.map(e=>`
     <div class="ev-row"><div class="ev-dot ${e.type}"></div>
-    <div class="ev-info"><div class="ev-title">${e.title}<span class="badge ${e.type}">${e.type}</span></div>
-    ${e.note?`<div class="ev-meta">${e.note}</div>`:''}</div></div>`).join('')
+    <div class="ev-info"><div class="ev-title">${esc(e.title)}<span class="badge ${e.type}">${esc(e.type)}</span></div>
+    ${e.end||e.time||e.note?`<div class="ev-meta">${[e.end?fmtWhen(e):e.time,esc(e.note)].filter(Boolean).join(' · ')}</div>`:''}</div></div>`).join('')
     :'<div class="empty">등록된 일정이 없어요</div>';
 }
 
@@ -465,26 +532,24 @@ document.getElementById('filterWrap').addEventListener('click',e=>{
 function renderUpcoming(){
   const list=document.getElementById('upcomingList');
   const items=events.filter(e=>{
-    const d=parseDate(e.date);
-    return d&&d>=today&&(activeFilter==='전체'||e.type===activeFilter);
+    return endOf(e)>=todayStr()&&(activeFilter==='전체'||e.type===activeFilter);
   }).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,10);
   list.innerHTML=items.length?items.map(e=>`
     <div class="ev-row"><div class="ev-dot ${e.type}"></div>
-    <div class="ev-info"><div class="ev-title">${e.title}<span class="badge ${e.type}">${e.type}</span></div>
-    <div class="ev-meta">${fmtDate(e.date)}${e.note?' · '+e.note:''}</div></div></div>`).join('')
+    <div class="ev-info"><div class="ev-title">${esc(e.title)}<span class="badge ${e.type}">${esc(e.type)}</span></div>
+    <div class="ev-meta">${fmtWhen(e)}${e.note?' · '+esc(e.note):''}</div></div></div>`).join('')
     :'<div class="empty">해당 일정이 없어요</div>';
 }
 
 function renderMonthList(){
   const list=document.getElementById('monthList');
   document.getElementById('monthListTitle').textContent=`${cur.m+1}월 전체`;
-  const items=events.filter(e=>{
-    const d=parseDate(e.date);return d&&d.getFullYear()===cur.y&&d.getMonth()===cur.m;
-  }).sort((a,b)=>a.date.localeCompare(b.date));
+  const first=df(new Date(cur.y,cur.m,1)),last=df(new Date(cur.y,cur.m+1,0));
+  const items=events.filter(e=>e.date.slice(0,10)<=last&&endOf(e)>=first).sort((a,b)=>a.date.localeCompare(b.date));
   list.innerHTML=items.length?items.map(e=>`
     <div class="ev-row"><div class="ev-dot ${e.type}"></div>
-    <div class="ev-info"><div class="ev-title">${e.title}<span class="badge ${e.type}">${e.type}</span></div>
-    <div class="ev-meta">${fmtDate(e.date)}${e.note?' · '+e.note:''}</div></div></div>`).join('')
+    <div class="ev-info"><div class="ev-title">${esc(e.title)}<span class="badge ${e.type}">${esc(e.type)}</span></div>
+    <div class="ev-meta">${fmtWhen(e)}${e.note?' · '+esc(e.note):''}</div></div></div>`).join('')
     :`<div class="empty">${cur.m+1}월 일정이 없어요</div>`;
 }
 
@@ -498,6 +563,12 @@ document.getElementById('nextBtn').onclick=()=>{
   selectedDate=null;document.getElementById('detailCard').style.display='none';
   renderCal();renderMonthList();
 };
+if(ICS_PROXY_URL)document.getElementById('howto').innerHTML=`
+  <strong>일정 추가 방법</strong><br>
+  아이폰 캘린더의 '학사일정' 캘린더에 추가하면 몇 분 뒤 반영돼요.<br><br>
+  <strong>종류 구분</strong><br>
+  제목 앞에 [종류]를 붙여요 &nbsp;예) [수행평가] 국어 발표<br>
+  ${TYPES.join(' · ')}`;
 document.getElementById('syncBtn').onclick=load;
 load();
 </script>
