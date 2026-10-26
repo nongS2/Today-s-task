@@ -223,6 +223,17 @@ body{
 }
 @keyframes spin{to{transform:rotate(360deg);}}
 
+.dday-main{padding:0.25rem 1.25rem 1rem;}
+.dday-num{font-size:44px;font-weight:700;letter-spacing:-0.04em;line-height:1.05;}
+.dday-num.정기시험{color:var(--red);}
+.dday-num.모의고사{color:var(--pink);}
+.dday-num.수행평가{color:var(--amber);}
+.dday-title{font-size:15px;font-weight:600;margin-top:6px;}
+.dday-date{font-size:12px;color:var(--text2);margin-top:2px;}
+.dday-rest{border-top:0.5px solid var(--border);}
+.dday-rest .ev-row{align-items:center;}
+.dday-small{font-size:13px;font-weight:600;color:var(--text2);min-width:44px;text-align:right;}
+
 .howto{
   background:var(--surface);border-radius:var(--radius-lg);
   padding:1rem 1.25rem;font-size:12px;color:var(--text2);
@@ -287,6 +298,11 @@ body{
   </div>
 
   <div class="sidebar">
+    <div class="card" id="ddayCard" style="display:none;">
+      <div class="card-head"><div class="card-title">D-day</div></div>
+      <div id="ddayBody"></div>
+    </div>
+
     <div class="card">
       <div class="card-head"><div class="card-title">다가오는 일정</div></div>
       <div class="filter-wrap" id="filterWrap">
@@ -375,7 +391,33 @@ async function load(){
   btn.disabled=false;
 }
 
-function render(){renderCal();renderUpcoming();renderMonthList();}
+function render(){renderDday();renderCal();renderUpcoming();renderMonthList();}
+
+const DDAY_TYPES=['정기시험','모의고사','수행평가'];
+function ddayLabel(d){
+  const diff=Math.round((d-today)/86400000);
+  return diff===0?'D-DAY':`D-${diff}`;
+}
+function renderDday(){
+  const card=document.getElementById('ddayCard'),body=document.getElementById('ddayBody');
+  const items=events.map(e=>({...e,d:parseDate(e.date)}))
+    .filter(e=>e.d&&e.d>=today&&DDAY_TYPES.includes(e.type))
+    .sort((a,b)=>a.d-b.d).slice(0,3);
+  if(!items.length){card.style.display='none';return;}
+  card.style.display='block';
+  const [first,...rest]=items;
+  body.innerHTML=`
+    <div class="dday-main">
+      <div class="dday-num ${first.type}">${ddayLabel(first.d)}</div>
+      <div class="dday-title">${first.title}<span class="badge ${first.type}">${first.type}</span></div>
+      <div class="dday-date">${fmtDate(first.date)}</div>
+    </div>
+    ${rest.length?`<div class="dday-rest">${rest.map(e=>`
+      <div class="ev-row"><div class="ev-dot ${e.type}"></div>
+      <div class="ev-info"><div class="ev-title">${e.title}</div>
+      <div class="ev-meta">${fmtDate(e.date)}</div></div>
+      <div class="dday-small">${ddayLabel(e.d)}</div></div>`).join('')}</div>`:''}`;
+}
 
 function renderCal(){
   document.getElementById('monthLabel').textContent=`${cur.y}년 ${cur.m+1}월`;
