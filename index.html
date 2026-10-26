@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
+<script>
+// 저장된 테마가 있으면 그걸, 없으면 기기 설정을 따라가요. 화면이 그려지기 전에 적용해서 깜빡이지 않아요
+(function(){
+  const saved=()=>{try{return localStorage.getItem('theme');}catch(e){return null;}};
+  const mq=matchMedia('(prefers-color-scheme: dark)');
+  const apply=t=>{document.documentElement.dataset.theme=t;};
+  apply(saved()||(mq.matches?'dark':'light'));
+  mq.addEventListener('change',e=>{if(!saved())apply(e.matches?'dark':'light');});
+})();
+</script>
 <title>학사일정</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -42,38 +52,38 @@
   --radius-lg:16px;
 }
 
-/* 다크 모드: 기기 설정을 따라가요 (iOS 다크 모드 색상) */
-@media(prefers-color-scheme:dark){
-  :root{
-    --bg:#000000;
-    --surface:#1C1C1E;
-    --surface2:rgba(118,118,128,0.24);
-    --surface3:rgba(118,118,128,0.12);
-    --border:rgba(84,84,88,0.6);
-    --border2:rgba(84,84,88,0.9);
-    --text:#FFFFFF;
-    --text2:rgba(235,235,245,0.6);
-    --text3:rgba(235,235,245,0.3);
-    --blue:#0A84FF;
-    --blue-light:rgba(10,132,255,0.18);
-    --green:#30D158;
-    --green-light:rgba(48,209,88,0.18);
-    --red:#FF453A;
-    --red-light:rgba(255,69,58,0.18);
-    --amber:#FF9F0A;
-    --amber-light:rgba(255,159,10,0.18);
-    --purple:#BF5AF2;
-    --purple-light:rgba(191,90,242,0.18);
-    --pink:#FF375F;
-    --pink-light:rgba(255,55,95,0.18);
-    --gray:#98989D;
-    --header-bg:rgba(0,0,0,0.75);
-    --sunday-faint:rgba(255,69,58,0.35);
-    --chip-all:#FFFFFF;
-    --chip-all-text:#000;
-    --green-text:var(--green);
-    --amber-text:var(--amber);
-  }
+/* 다크 모드 (iOS 다크 모드 색상). data-theme은 <head>의 스크립트가 정해요 */
+:root{color-scheme:light;}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#000000;
+  --surface:#1C1C1E;
+  --surface2:rgba(118,118,128,0.24);
+  --surface3:rgba(118,118,128,0.12);
+  --border:rgba(84,84,88,0.6);
+  --border2:rgba(84,84,88,0.9);
+  --text:#FFFFFF;
+  --text2:rgba(235,235,245,0.6);
+  --text3:rgba(235,235,245,0.3);
+  --blue:#0A84FF;
+  --blue-light:rgba(10,132,255,0.18);
+  --green:#30D158;
+  --green-light:rgba(48,209,88,0.18);
+  --red:#FF453A;
+  --red-light:rgba(255,69,58,0.18);
+  --amber:#FF9F0A;
+  --amber-light:rgba(255,159,10,0.18);
+  --purple:#BF5AF2;
+  --purple-light:rgba(191,90,242,0.18);
+  --pink:#FF375F;
+  --pink-light:rgba(255,55,95,0.18);
+  --gray:#98989D;
+  --header-bg:rgba(0,0,0,0.75);
+  --sunday-faint:rgba(255,69,58,0.35);
+  --chip-all:#FFFFFF;
+  --chip-all-text:#000;
+  --green-text:var(--green);
+  --amber-text:var(--amber);
 }
 
 body{
@@ -108,6 +118,9 @@ body{
 }
 .sync-btn:hover{background:var(--blue-light);}
 .sync-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.theme-btn{padding:5px 8px;}
+.theme-btn .i-sun,:root[data-theme="dark"] .theme-btn .i-moon{display:none;}
+:root[data-theme="dark"] .theme-btn .i-sun{display:block;}
 
 .main{
   max-width:960px;margin:0 auto;
@@ -300,6 +313,10 @@ body{
   <div class="logo">학사일정</div>
   <div class="header-right">
     <div class="today-badge" id="todayBadge"></div>
+    <button class="sync-btn theme-btn" id="themeBtn" aria-label="다크 모드 전환" title="다크 모드 전환">
+      <svg class="i-moon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <svg class="i-sun" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M8 1.5v1.3M8 13.2v1.3M1.5 8h1.3M13.2 8h1.3M3.4 3.4l.9.9M11.7 11.7l.9.9M3.4 12.6l.9-.9M11.7 4.3l.9-.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
     <button class="sync-btn" id="syncBtn">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M13.5 8A5.5 5.5 0 1 1 8 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 1v3.5L10.5 2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       새로고침
@@ -612,6 +629,11 @@ if(ICS_PROXY_URL)document.getElementById('howto').innerHTML=`
   제목 앞에 [종류]를 붙여요 &nbsp;예) [수행평가] 국어 발표<br>
   ${TYPES.join(' · ')}`;
 document.getElementById('syncBtn').onclick=load;
+document.getElementById('themeBtn').onclick=()=>{
+  const t=document.documentElement.dataset.theme==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=t;
+  try{localStorage.setItem('theme',t);}catch(e){}
+};
 load();
 </script>
 </body>
