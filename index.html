@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
 <title>학사일정</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -30,8 +31,49 @@
   --purple-light:rgba(175,82,222,0.1);
   --pink:#FF2D55;
   --pink-light:rgba(255,45,85,0.1);
+  --gray:#8E8E93;
+  --header-bg:rgba(242,242,247,0.85);
+  --sunday-faint:rgba(255,59,48,0.3);
+  --chip-all:#1C1C1E;
+  --chip-all-text:#fff;
+  --green-text:#248A3D;
+  --amber-text:#C93400;
   --radius:12px;
   --radius-lg:16px;
+}
+
+/* 다크 모드: 기기 설정을 따라가요 (iOS 다크 모드 색상) */
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#000000;
+    --surface:#1C1C1E;
+    --surface2:rgba(118,118,128,0.24);
+    --surface3:rgba(118,118,128,0.12);
+    --border:rgba(84,84,88,0.6);
+    --border2:rgba(84,84,88,0.9);
+    --text:#FFFFFF;
+    --text2:rgba(235,235,245,0.6);
+    --text3:rgba(235,235,245,0.3);
+    --blue:#0A84FF;
+    --blue-light:rgba(10,132,255,0.18);
+    --green:#30D158;
+    --green-light:rgba(48,209,88,0.18);
+    --red:#FF453A;
+    --red-light:rgba(255,69,58,0.18);
+    --amber:#FF9F0A;
+    --amber-light:rgba(255,159,10,0.18);
+    --purple:#BF5AF2;
+    --purple-light:rgba(191,90,242,0.18);
+    --pink:#FF375F;
+    --pink-light:rgba(255,55,95,0.18);
+    --gray:#98989D;
+    --header-bg:rgba(0,0,0,0.75);
+    --sunday-faint:rgba(255,69,58,0.35);
+    --chip-all:#FFFFFF;
+    --chip-all-text:#000;
+    --green-text:var(--green);
+    --amber-text:var(--amber);
+  }
 }
 
 body{
@@ -44,7 +86,7 @@ body{
 }
 
 .site-header{
-  background:rgba(242,242,247,0.85);
+  background:var(--header-bg);
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
   border-bottom:0.5px solid var(--border);
@@ -134,7 +176,7 @@ body{
   display:flex;align-items:center;justify-content:center;
 }
 .day-cell:nth-child(7n+1) .dn{color:var(--red);}
-.day-cell.other-month:nth-child(7n+1) .dn{color:rgba(255,59,48,0.3);}
+.day-cell.other-month:nth-child(7n+1) .dn{color:var(--sunday-faint);}
 
 .dot-row{display:flex;gap:3px;flex-wrap:wrap;padding:0 2px;}
 .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
@@ -144,7 +186,7 @@ body{
 .dot.수행평가{background:var(--amber);}
 .dot.모의고사{background:var(--pink);}
 .dot.과제{background:var(--blue);}
-.dot.기타{background:#8E8E93;}
+.dot.기타{background:var(--gray);}
 
 .legend{
   display:flex;flex-wrap:wrap;gap:10px;
@@ -171,7 +213,7 @@ body{
 }
 .filter-btn:hover{opacity:0.8;}
 .filter-btn.active{color:#fff;}
-.filter-btn.active.전체{background:#1C1C1E;}
+.filter-btn.active.전체{background:var(--chip-all);color:var(--chip-all-text);}
 .filter-btn.active.주요행사{background:var(--purple);}
 .filter-btn.active.방학{background:var(--green);}
 .filter-btn.active.정기시험{background:var(--red);}
@@ -198,7 +240,7 @@ body{
 .ev-dot.수행평가{background:var(--amber);}
 .ev-dot.모의고사{background:var(--pink);}
 .ev-dot.과제{background:var(--blue);}
-.ev-dot.기타{background:#8E8E93;}
+.ev-dot.기타{background:var(--gray);}
 .ev-info{flex:1;}
 .ev-title{font-size:14px;font-weight:500;color:var(--text);line-height:1.35;}
 .ev-meta{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.4;}
@@ -208,9 +250,9 @@ body{
   padding:1px 6px;border-radius:6px;margin-left:5px;vertical-align:middle;
 }
 .badge.주요행사{background:var(--purple-light);color:var(--purple);}
-.badge.방학{background:var(--green-light);color:#248A3D;}
+.badge.방학{background:var(--green-light);color:var(--green-text);}
 .badge.정기시험{background:var(--red-light);color:var(--red);}
-.badge.수행평가{background:var(--amber-light);color:#C93400;}
+.badge.수행평가{background:var(--amber-light);color:var(--amber-text);}
 .badge.모의고사{background:var(--pink-light);color:var(--pink);}
 .badge.과제{background:var(--blue-light);color:var(--blue);}
 .badge.기타{background:var(--surface2);color:var(--text2);}
